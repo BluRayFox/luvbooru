@@ -10,11 +10,15 @@ http.createServer(function(req, res)
 
     if req.url == '/' then 
         www = '.home'
+
     else
         www = req.url:sub(2, #req.url)
+
     end
 
-    print(www)
+    local address = req.socket:address().ip
+    local logMessage = '[%s]: %s -> %s' -- ip, method, path
+    print(logMessage:format(address, req.method, req.url))
     
     local success, handler = pcall(function()
         return require('./www/'..www..'/handler')

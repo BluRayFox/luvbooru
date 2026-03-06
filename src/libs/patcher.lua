@@ -5,7 +5,6 @@
 ]=]
 
 local patcher = {}
-
 local patches = {}
 
 -- redirect patch
@@ -30,8 +29,6 @@ function patcher.patchRes(res, patchesList)
             patchFunc(res)
         end
     end
-
-    
 end
 
 return patcher
