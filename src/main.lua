@@ -1,14 +1,10 @@
 local http = require('http')
 local config = require('./config')
+local patcher = require('./libs/patcher')
 
 http.createServer(function(req, res)
     -- patch res 
-    function res.redirect(self, path, status, finish)
-        self:writeHead(status or 308, {
-            ["Location"] = path
-        })
-        if finish then self:finish() end
-    end
+    patcher.patchRes(res, {redirect = true})
 
     local www = ''
 
