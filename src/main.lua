@@ -8,15 +8,47 @@ local http = require('http')
 local config = require('./config')
 local patcher = require('patcher')
 local utils = require('utils')
+local task = require('task')
 
 -- globals
 _G.utils = utils
 _G.patcher = patcher
+_G.task = task
+
+local ipReqPerSec = {}
+local rateLimitedIps = {}
 
 http.createServer(function(req, res)
     -- patch res 
     patcher.patchRes(res, {redirect = true})
+    
     local urlTable = utils.urlToTable(req.url)
+    local address = req.socket:address().ip
+
+    task.spawn(function()
+        ipReqPerSec[address] = (ipReqPerSec[address] or 0) + 1
+
+        if ipReqPerSec[address] >= config.rateLimit and not rateLimitedIps[address] then
+            rateLimitedIps[address] = true
+            
+            task.delay(15, function()
+                rateLimitedIps[address] = nil  -- memory efficent!!
+            end)
+        end
+
+        task.wait(1)
+        ipReqPerSec[address] = (ipReqPerSec[address] or 0) - 1
+
+        if ipReqPerSec[address] <= 0 then
+            ipReqPerSec[address] = nil -- memory efficent!!
+        end
+    end)
+
+    if rateLimitedIps[address] then
+        res.statusCode = 429
+        res:finish('429: Too Many Requests.')
+        return
+    end
 
     local www = ''
 
@@ -28,9 +60,8 @@ http.createServer(function(req, res)
 
     end
 
-    local address = req.socket:address().ip
-    local logMessage = '[%s]: %s -> %s' -- ip, method, path
-    print(logMessage:format(address, req.method, req.url))
+    local logMessage = '[%s|%s]: %s -> %s' -- time, ip, method, path
+    print(logMessage:format(os.date('%H:%M:%S'), address, req.method, req.url))
     
     local success, handler = pcall(function()
         return require('./www/'..www..'/handler')
@@ -58,6 +89,5 @@ http.createServer(function(req, res)
 
     return
 end):listen(config.port)
-
 
 print('Running on http://localhost' .. (config.port ~= 80 and ':'..config.port or ''))
