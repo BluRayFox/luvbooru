@@ -6,6 +6,7 @@ package.path = './libs/?.lua;'
     .. package.path
 
 local http = require('http')
+local url = require('url')
 ------
 local config = require('./config')
 local patcher = require('patcher')
@@ -34,7 +35,7 @@ http.createServer(function(req, res)
         if ipReqPerSec[address] >= config.rateLimit and not rateLimitedIps[address] then
             rateLimitedIps[address] = true
             
-            task.delay(15, function()
+            task.delay(config.rateLimitTimer, function()
                 rateLimitedIps[address] = nil  -- memory efficent!!
             end)
         end
@@ -53,19 +54,19 @@ http.createServer(function(req, res)
         return
     end
 
-    local www = ''
-
-    if req.url == '/' then 
-        www = '.home'
-
-    else
-        www = req.url:sub(2, #req.url)
-
-    end
-
     local logMessage = '[%s|%s]: %s -> %s' -- time, ip, method, path
     print(logMessage:format(os.date('%H:%M:%S'), address, req.method, req.url))
-    
+
+    local parsed = url.parse(req.url)
+    local path = parsed.pathname
+
+    local www
+    if path == '/' then
+        www = '.home'
+    else
+        www = path:sub(2)
+    end
+
     local success, handler = pcall(function()
         return require('./www/'..www..'/handler')
     end)

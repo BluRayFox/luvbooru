@@ -1,6 +1,7 @@
 return {
 
     port = 8080,
-    rateLimit = 5,
+    rateLimit = 8,
+    rateLimitTimer = 60 -- in seconds
 
 }
