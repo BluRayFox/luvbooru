@@ -13,9 +13,9 @@ function handler.handler(req, res)
     if not filename then
         res:redirect('/not-found', nil, true) 
         return
-     end
+    end
 
-     fs.readFile('./www/storage/data/'..filename, function(err, data)
+     fs.readFile('./static/'..filename, function(err, data)
         if err then
             print('error opening file: '..err)
             res:redirect('/not-found', nil, true)
