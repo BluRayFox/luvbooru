@@ -1,6 +1,5 @@
 
 -- packages and libs require aliases
--- elite ball knowledge
 package.path = './libs/?.lua;'
     .. './libs/?/init.lua;'
     .. package.path
