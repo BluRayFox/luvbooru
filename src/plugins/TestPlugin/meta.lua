@@ -7,7 +7,7 @@ return {
     author = 'Author Author',
 
     requires = {
-        app_version = "",
+        backend_version = "",
     },
     dependencies = {},
 

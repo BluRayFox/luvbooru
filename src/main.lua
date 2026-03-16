@@ -11,22 +11,18 @@ patcher.patchLuajit() -- for some reason crashes on termux if
                       -- certain patches are not applied
 ------      ------
 
-local config = require('./config')
-local utils = require('utils')
-local task = require('task')
-local locales = require('locales')
-local neco = require('neco')
+_G.config = require('./config')
+_G.locales = require('locales')
+_G.getlstr = locales.getString
+_G.utils = require('utils')
+_G.task = require('task')
+_G.neco = require('neco')
 
 ------      ------
 
 -- globals --
-_G.utils = utils
 _G.patcher = patcher
-_G.task = task
-_G.config = config
-_G.VERSION = 'v0.1.2-alpha'
-_G.locales = locales
-_G.neco = neco
+_G.VERSION = 'v0.1.2-alpha1'
 
 _G.ipReqPerSec = {}
 _G.rateLimitedIps = {}
@@ -36,7 +32,7 @@ _G.errorlogs = {}
 -- Functions
 local dprint = utils.dprint
 _G.dprint = dprint
-local getlstr = locales.getString
+_G.getlstr = locales.getString
 
 -- Code
 dprint(getlstr('debug_mode_enabled'))

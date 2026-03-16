@@ -14,7 +14,7 @@ function mod.getString(stringId, language)
     if language then argerror(2, language, 'string', 'getString') end
 
     if not language then language = config.lang end
-    local foundstr = locales[language] and locales[language][stringId] or locales['en'] and locales['en'][stringId]
+    local foundstr = (locales[language] and locales[language][stringId]) or (locales['en'] and locales['en'][stringId])
 
     return foundstr
 end
@@ -48,5 +48,6 @@ function mod.removeLanguage(language)
 end
 
 locales['en'] = require('./locales/en')
+locales['ru'] = require('./locales/ru')
 
 return mod
