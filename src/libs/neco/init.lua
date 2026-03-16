@@ -30,7 +30,7 @@ for _, name in ipairs(fs.readdirSync(pluginsPath)) do
             setfenv(metaCompiled, {}) -- safe
             meta = metaCompiled()
         else
-            error(getlstr('lugin_load_faliure_does_not_exist'):format('meta.lua'))
+            error(getlstr('plugin_load_faliure_does_not_exist'):format('meta.lua'))
         end
 
         print(getlstr('plugin_loading_plugin'):format(meta.name or 'Unknown Plugin'))
