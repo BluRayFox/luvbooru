@@ -6,9 +6,11 @@ package.path = './libs/?.lua;'
 
 local http = require('http')
 local url = require('url')
+local patcher = require('patcher')
+patcher.patchLuajit() -- for some reason crashes on termux if 
+                      -- certain patches are not applied
 ------
 local config = require('./config')
-local patcher = require('patcher')
 local utils = require('utils')
 local task = require('task')
 ------
