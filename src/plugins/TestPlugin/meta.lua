@@ -7,7 +7,7 @@ return {
     author = 'Author Author',
 
     requires = {
-        backend_version = "",
+        backend_version = "v0.1.2-alpha1",
     },
     dependencies = {},
 

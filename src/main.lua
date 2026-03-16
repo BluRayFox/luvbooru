@@ -1,4 +1,6 @@
 
+_G.VERSION = 'v0.1.2-alpha1'
+
 -- packages and libs require aliases
 package.path = './libs/?.lua;'
     .. './libs/?/init.lua;'
@@ -22,8 +24,6 @@ _G.neco = require('neco')
 
 -- globals --
 _G.patcher = patcher
-_G.VERSION = 'v0.1.2-alpha1'
-
 _G.ipReqPerSec = {}
 _G.rateLimitedIps = {}
 
