@@ -1,0 +1,3 @@
+- [x] Static Files Serving
+- [ ] Complete Wiki
+- [ ] Finish Neco (Plugin Manager)
