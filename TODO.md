@@ -1,3 +1,7 @@
 - [x] Static Files Serving
 - [ ] Complete Wiki
 - [ ] Finish Neco (Plugin Manager)
+- [ ] Translate to other languages
+    - [x] English
+    - [ ] Russian (WIP)
+    - [ ] Spanish
