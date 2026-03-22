@@ -1,1 +1,2 @@
 sync-backend.sh
+./src/manager/session.lock

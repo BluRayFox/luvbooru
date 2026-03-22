@@ -4,6 +4,8 @@
 
 ]=]
 
+local fs = require('fs')
+
 local patcher = {}
 local resPatches = {}
 
@@ -20,6 +22,22 @@ function resPatches.redirect(res)
     return
 end
 
+-- serve files just with path
+function resPatches.serveFile(res)
+    function res.serveFile(self, path, sync)
+        if sync then
+            local content = fs.readFileSync(path)
+            res:write(content)
+
+        else
+
+        end
+
+
+
+
+    end
+end
 
 function patcher.patchRes(res, patchesList)
     patchesList = patchesList or {} -- make it optional
@@ -40,6 +58,18 @@ luajitPatches['unpack fix'] = function()
     _G.table.unpack = table.unpack or unpack
 end
 
+luajitPatches['table find'] = function()
+    table.find = function(t, value)
+        for i, v in ipairs(t) do
+            if v == value then
+                return true
+            end
+        end
+        
+        return false
+    end
+end
+
 function patcher.patchLuajit(patchesList)
     patchesList = patchesList or {} -- make it optional
     for patchName, patchFunc in pairs(luajitPatches) do
@@ -48,5 +78,6 @@ function patcher.patchLuajit(patchesList)
         end
     end
 end
+
 
 return patcher

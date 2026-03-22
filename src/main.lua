@@ -1,5 +1,5 @@
 
-_G.VERSION = 'v0.1.2-alpha1'
+_G.VERSION = 'v0.1.3-alpha'
 
 -- packages and libs require aliases
 package.path = './libs/?.lua;'
@@ -26,7 +26,6 @@ _G.neco = require('neco')
 _G.patcher = patcher
 _G.ipReqPerSec = {}
 _G.rateLimitedIps = {}
-
 _G.errorlogs = {}
 
 -- Functions
@@ -34,10 +33,25 @@ local dprint = utils.dprint
 _G.dprint = dprint
 _G.getlstr = locales.getString
 
--- Code
-dprint(getlstr('debug_mode_enabled'))
+-- Manager Integration
+local server = {}
+server.execute = function(args)
 
-http.createServer(function(req, res)
+    if args[1] == 'mainserver' then
+        if args[2] == 'start' then
+            server.startMainserver()
+        elseif args[2] == 'stop' then
+            server.stopMainserver()
+        end
+    end
+    
+end
+
+server.startMainserver = function()
+
+neco.loadPlugins()
+
+local mainserver = http.createServer(function(req, res)
     -- patch res 
     patcher.patchRes(res, {redirect = true})
     
@@ -137,6 +151,22 @@ http.createServer(function(req, res)
     end
 
     return
-end):listen(config.port)
+end)
+mainserver:listen(config.port)
+server.mainserver = mainserver
 
 print(getlstr('running_on_host'):format('http://localhost' .. (config.port ~= 80 and ':'..config.port or '')))
+
+end
+
+server.stopMainserver = function ()
+    print('Stopping the server...')
+    server.mainserver:destroy()
+end
+
+-- Code
+if _G.MANAGER then return server end
+dprint(getlstr('debug_mode_enabled'))
+
+server.startServer()
+
