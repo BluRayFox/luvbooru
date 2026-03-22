@@ -46,7 +46,7 @@ local function check()
     local success = true
     local err = ''
 
-    checkDir('../plugins', true)
+    checkDir('./plugins', true)
 
     checkDir('./manager', true)
     checkDir('./manager/scripts', true)
