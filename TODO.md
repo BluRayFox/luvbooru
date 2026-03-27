@@ -1,7 +1,12 @@
-- [x] Static Files Serving
 - [ ] Complete Wiki
-- [ ] Finish Neco (Plugin Manager)
+- [ ] Finish Neco (Plugin Loader)
 - [ ] Translate to other languages
     - [x] English
     - [ ] Russian (WIP)
     - [ ] Spanish
+- [ ] Finish Manager Script
+    - [ ] Manage Plugins (Install/Remove/Update/Fetch/List)
+    - [ ] Manage Configs (Import/Export)
+
+
+

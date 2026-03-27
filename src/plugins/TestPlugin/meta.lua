@@ -1,6 +1,6 @@
 return {
 
-    name = 'TestPlugin',
+    name = 'testplugin',
     description = 'This is a Test Plugin',
     license = 'MIT',
     version = '0.1',

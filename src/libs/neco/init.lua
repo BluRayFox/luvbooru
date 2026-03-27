@@ -81,6 +81,8 @@ function neco.loadPlugins()
             print(err)
         end
 
+        -- Expose plugin apis
+        _G[meta.name] = plugin
         ::continue::
     end
 end
@@ -113,7 +115,16 @@ function neco.execute(args)
     end
 end
 
-
+function neco.event(event, ...)
+    for pluginName, module in pairs(neco.loadedPlugins) do
+        if module[event] then
+            local success, err = pcall(module[event], ...)
+            if not success then
+                print(('%s: %s'):format(pluginName, err))
+            end
+        end
+    end
+end
 
 
 return neco

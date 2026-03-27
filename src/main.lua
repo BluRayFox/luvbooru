@@ -58,6 +58,16 @@ local mainserver = http.createServer(function(req, res)
     local urlTable = utils.urlToTable(req.url)
     local address = req.socket:address().ip
 
+
+    do
+        local scReq = table.deepCopy(req, false)
+        local scRes = table.deepCopy(res, false)
+
+        neco.event('onServerRequest', scReq, scRes)
+        neco.event('onServerRequestWritable', req, res)
+
+    end
+
     task.spawn(function()
         ipReqPerSec[address] = (ipReqPerSec[address] or 0) + 1
 
@@ -168,5 +178,5 @@ end
 if _G.MANAGER then return server end
 dprint(getlstr('debug_mode_enabled'))
 
-server.startServer()
+server.startMainserver()
 
