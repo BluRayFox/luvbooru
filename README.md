@@ -1,4 +1,2 @@
-# Turbo Nagets Backend
-Turbo Nagets Website Backend, built with **[Luvit.](https://luvit.io)**
-
-[TODO list](/TODO.md)
+# LuvBooru
+Open-Source Selfhost Booru Imageboard made with **[Luvit](https://luvit.io)** + **[Turbo Nagets Website Backend.](https://github.com/BluRayFox/turbo-nagets-backend)**
