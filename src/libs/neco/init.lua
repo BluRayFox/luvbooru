@@ -36,7 +36,7 @@ function neco.loadPlugins()
         local full = path.join(pluginsPath, name)
         local stat = fs.statSync(full)
 
-        if not stat.type == 'directory' then
+        if stat.type ~= 'directory' then
             goto continue
         end
 
@@ -48,7 +48,7 @@ function neco.loadPlugins()
         local success, err = pcall(function()
 
             local metaCompiled = loadstring(metaLua)
-            local main = loadstring(mainLua)
+
 
             if metaCompiled then
                 setfenv(metaCompiled, {}) -- safe
@@ -58,6 +58,7 @@ function neco.loadPlugins()
             end
 
             print(getlstr('plugin_loading_plugin'):format(meta.name or 'Unknown Plugin'))
+            local main = loadstring(mainLua, '@plugin '..meta.name)
 
             if meta.requires.backend_version ~= VERSION then
                 if nconfig.allowIncompatiblePlugins then
@@ -68,6 +69,16 @@ function neco.loadPlugins()
             end
 
             if main then
+                local env = {}
+                    env.fs = require("fs")
+                    env.path = require("path")
+                    env.uv = require("uv")
+                    env.json = require('json')
+                    env.path = require('path')
+
+                setmetatable(env, {__index=_G})
+                setfenv(main, env)
+
                 plugin = main()
                 if plugin and plugin.init then plugin.init() end
             else
