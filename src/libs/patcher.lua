@@ -1,10 +1,11 @@
 --[=[
-
-    Usefull patches for response userdata for luvit
+   
+    Usefull patches for luajit and luvit
 
 ]=]
 
 local fs = require('fs')
+local json = require('json')
 
 local patcher = {}
 local resPatches = {}
@@ -26,16 +27,54 @@ end
 function resPatches.serveFile(res)
     function res.serveFile(self, path, sync)
         if sync then
-            local content = fs.readFileSync(path)
-            res:write(content)
+            local content, err = fs.readFileSync(path)
+
+            if not content then
+                self.statusCode = 500
+                return self:finish("Error reading file: " .. tostring(err))
+            end
+
+            self:write(content)
+            return self:finish()
 
         else
+            fs.readFile(path, function(err, content)
+                if err then
+                    self.statusCode = 500
+                    return self:finish("Error reading file: " .. tostring(err))
+                end
 
+                self:write(content)
+                self:finish()
+            end)
+        end
+    end
+end
+
+function resPatches.sendjson(res)
+    function res.sendJson(self, data, status)
+        self:writeHead(status or 200, {
+            ["Content-Type"] = "application/json"
+        })
+        self:finish(json.encode(data))
+    end
+end
+
+-- sender
+function resPatches.send(res)
+    function res.send(self, data, status)
+        if type(data) == "table" then
+            return self:json(data, status)
         end
 
+        self:finish(data)
+    end
+end
 
-
-
+function resPatches.status(res)
+    function res.status(self, code)
+        self.statusCode = code
+        return self
     end
 end
 
@@ -159,6 +198,26 @@ luajitPatches['table utils'] = function()
 
         return result
     end
+
+    table.map = function(t, fn)
+        local out = {}
+        for k, v in pairs(t) do
+            out[k] = fn(v, k)
+        end
+        return out
+    end
+
+    table.filter = function(t, fn)
+        local out = {}
+        for k, v in pairs(t) do
+            if fn(v, k) then
+                out[k] = v
+            end
+        end
+        return out
+    end
+
+
 
     table.contains = function(t, value)
         for i, v in ipairs(t) do
