@@ -61,7 +61,7 @@ function neco.loadPlugins()
 
             if meta.requires.backend_version ~= VERSION then
                 if nconfig.allowIncompatiblePlugins then
-                print(getlstr('plugin_allow_incompatble_version')) 
+                    print(getlstr('plugin_allow_incompatble_version')) 
                 else
                     error(getlstr('plugin_incompatble_version')) 
                 end

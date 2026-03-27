@@ -91,7 +91,6 @@ end
 
 -- luajit patches
 local luajitPatches = {}
-
 luajitPatches['unpack fix'] = function()
     _G.unpack = unpack or table.unpack
     _G.table.unpack = table.unpack or unpack

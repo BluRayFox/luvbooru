@@ -1,6 +1,6 @@
 return {
     debug = true,
-    port = 80,
+    port = 8080,
     rateLimit = 5,
     rateLimitTimer = 60, -- in seconds
     lang = 'en' -- 'ru/es/whatever'
